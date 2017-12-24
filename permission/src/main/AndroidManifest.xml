@@ -1,2 +1,8 @@
-<manifest package="me.tankery.permission">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="me.tankery.permission">
+    <application>
+        <activity
+            android:name=".PermissionRequestActivity"
+            android:theme="@style/PermissionRequestTheme"/>
+    </application>
 </manifest>
