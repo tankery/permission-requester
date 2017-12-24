@@ -1,0 +1,15 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 26
+    }
+}
+
+dependencies {
+    implementation deps.timber
+}
