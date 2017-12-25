@@ -20,6 +20,24 @@ Here is a workflow for permission request policy:
 
 When you start requesting permission with `PermissionRequestActivity`, it will first check if we already have permission. If don't, show system permission requesting dialogs to ask for permissions. Then show a "rationale dialog" for user if he denied the permissions, or show a "go settings dialog" to guide user to settings when he click "Don't ask again".
 
+## Download
+
+**Gradle**
+
+``` gradle
+dependencies {
+    compile 'me.tankery.lib:permission-requester:1.0.0'
+}
+```
+
+**Gradle 3.0**
+
+``` gradle
+dependencies {
+    implementation 'me.tankery.lib:permission-requester:1.0.0'
+}
+```
+
 ## Usage
 
 If you don't need response when requesting finished, all you need to do is to start the `PermissionRequestActivity` using:

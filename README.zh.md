@@ -20,6 +20,24 @@ Permission Reuquester 是一个可以让你用最少工作量，完成一整套�
 
 当你开始通过 `PermissionRequestActivity` 来请求权限时。它首先会检测是否已经有权限。有则返回，没有则会开始调用系统方法来直接请求权限。若用户拒绝授权。它会弹出你指定的解释说明，告诉用户你为何需要这些权限，用户确认后将会重新请求。若用户点选了“不再提醒”，它会弹出一个引导，指引用户到设置中去开启权限。
 
+## 下载
+
+**Gradle**
+
+``` gradle
+dependencies {
+    compile 'me.tankery.lib:permission-requester:1.0.0'
+}
+```
+
+**Gradle 3.0**
+
+``` gradle
+dependencies {
+    implementation 'me.tankery.lib:permission-requester:1.0.0'
+}
+```
+
 ## 用法
 
 要实现一个权限请求非常的容易。如果你不需要立刻获得权限请求结果，而仅仅是申请权限的话。用下面这一行代码就够了：

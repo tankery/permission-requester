@@ -1,0 +1,112 @@
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+// Let javadoc depends on assemble, so we can run assemble before publish task begin.
+task javadoc(type: Javadoc, dependsOn: "$path:assembleRelease") {
+    source = android.sourceSets.main.java.sourceFiles
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+// Create the pom configuration:
+def pomConfig = {
+    licenses {
+        license {
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id POM_DEVELOPER_ID
+            name POM_DEVELOPER_NAME
+            email POM_DEVELOPER_EMAIL
+        }
+    }
+
+    scm {
+       url POM_SCM_URL
+    }
+}
+
+publishing {
+    publications {
+        PermissionRequester(MavenPublication) {
+            artifact "$buildDir/outputs/aar/${project.name}-release.aar"
+            artifact sourcesJar
+            artifact javadocJar
+            artifactId POM_ARTIFACT_ID
+            groupId POM_GROUP
+            version POM_VERSION_NAME
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', POM_LIB_DESCRIPTION)
+                root.appendNode('name', POM_LIB_NAME)
+                root.appendNode('url', POM_LIB_WEBSITE)
+                root.children().last() + pomConfig
+            }
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+                // Iterate over the implementation dependencies (we don't want the test ones), adding a <dependency> node for each
+                configurations.implementation.allDependencies.each {
+                   // Ensure dependencies such as fileTree are not included.
+                   if (it.name != 'unspecified') {
+                      def dependencyNode = dependenciesNode.appendNode('dependency')
+                      dependencyNode.appendNode('groupId', it.group)
+                      dependencyNode.appendNode('artifactId', it.name)
+                      dependencyNode.appendNode('version', it.version)
+                   }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url "$rootProject.buildDir/repo"
+        }
+    }
+}
+
+Properties properties = new Properties()
+properties.load(rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty('bintray.user')
+    key = properties.getProperty('bintray.apiKey')
+    publications = ['PermissionRequester']
+    configurations = ['archives']
+    pkg {
+        repo = 'maven'
+        name = POM_LIB_NAME
+        desc = POM_LIB_DESCRIPTION
+        websiteUrl = POM_LIB_WEBSITE
+        issueTrackerUrl = POM_LIB_ISSUE_URL
+        vcsUrl = POM_SCM_URL
+        licenses = ['Apache-2.0']
+        publicDownloadNumbers = true
+
+        githubRepo = POM_GITHUB_REPO
+        githubReleaseNotesFile = POM_GITHUB_RELEASE_NOTE
+
+        //Optional version descriptor
+        version {
+            name = POM_VERSION_NAME
+            desc = POM_VERSION_DESCRIPTION
+            released  = new Date()
+            vcsTag = "v_$POM_VERSION_NAME"
+        }
+    }
+}
+
+bintrayUpload.dependsOn "$path:publish"
+

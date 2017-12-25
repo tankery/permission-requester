@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -15,3 +17,6 @@ dependencies {
     implementation deps.support.annotations
     implementation deps.timber
 }
+
+apply from: 'bintray-push.gradle'
+
