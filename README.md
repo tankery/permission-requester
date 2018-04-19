@@ -79,10 +79,11 @@ You can also override `showRationaleDialog` to show a custom rationale dialog wh
  * @param message dialog message
  * @param dialogResult always have a result for user action
  *                     (ok - > positive/cancel -> negative/dismiss -> negative)
+ * @return The custom dialog shown.
  */
 @Override
-protected void showRationaleDialog(final boolean canRequestAgain, String message,
-                                   final @NonNull DialogResult dialogResult) {
+protected Dialog showRationaleDialog(final boolean canRequestAgain, String message,
+                                     final @NonNull DialogResult dialogResult) {
     AlertDialog alertDialog = new AlertDialog.Builder(this)
             .setMessage(message)
             .setCancelable(true)
@@ -108,6 +109,7 @@ protected void showRationaleDialog(final boolean canRequestAgain, String message
             })
             .show();
     alertDialog.setCanceledOnTouchOutside(true);
+    return alertDialog;
 }
 ```
 

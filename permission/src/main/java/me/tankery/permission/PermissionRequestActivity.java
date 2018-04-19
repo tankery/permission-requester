@@ -2,6 +2,7 @@ package me.tankery.permission;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -75,6 +76,7 @@ public class PermissionRequestActivity extends Activity {
     private String mGoSettingsMsg;
 
     private boolean mFromPermissionRequest = false;
+    private Dialog mRationalDialog;
 
     /**
      * Start permission request with result.
@@ -157,6 +159,8 @@ public class PermissionRequestActivity extends Activity {
         super.onStop();
         Timber.tag(TAG).d("onStop");
         mFromPermissionRequest = false;
+
+        removeDialog();
     }
 
     @Override
@@ -164,21 +168,30 @@ public class PermissionRequestActivity extends Activity {
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Timber.tag(TAG).d("onRequestPermissionsResult for %d", requestCode);
+        Timber.tag(TAG).d("onRequestPermissionsResult for %d with %d permissions",
+                requestCode, permissions.length);
         mFromPermissionRequest = true;
 
         if (requestCode == PERMISSIONS_REQUEST_CODE) {
-            checkResult(permissions, grantResults, true);
+            if (permissions.length < mPermissions.length) {
+                checkResult(mPermissions, grantResultsFor(mPermissions), true);
+            } else {
+                checkResult(permissions, grantResults, true);
+            }
         }
     }
 
     private void requestPermissionIfNeed() {
         Timber.tag(TAG).i("Start permission request");
-        int[] grantResults = new int[mPermissions.length];
-        for (int i = 0; i < mPermissions.length; i++) {
-            grantResults[i] = ActivityCompat.checkSelfPermission(this, mPermissions[i]);
+        checkResult(mPermissions, grantResultsFor(mPermissions), false);
+    }
+
+    private int[] grantResultsFor(String[] permissions) {
+        int[] grantResults = new int[permissions.length];
+        for (int i = 0; i < permissions.length; i++) {
+            grantResults[i] = ActivityCompat.checkSelfPermission(this, permissions[i]);
         }
-        checkResult(mPermissions, grantResults, false);
+        return grantResults;
     }
 
     private void checkResult(@NonNull String[] permissions, @NonNull int[] grantResults,
@@ -219,7 +232,9 @@ public class PermissionRequestActivity extends Activity {
     }
 
     private void showPermissionDialog(final boolean canRequestAgain) {
-        showRationaleDialog(canRequestAgain,
+        removeDialog();
+
+        mRationalDialog = showRationaleDialog(canRequestAgain,
                 canRequestAgain ? mRationaleMsg : mGoSettingsMsg,
                 new DialogResult() {
                     @Override
@@ -247,14 +262,15 @@ public class PermissionRequestActivity extends Activity {
      * @param message dialog message
      * @param dialogResult always have a result for user action
      *                     (ok - > positive/cancel -> negative/dismiss -> negative)
+     * @return The custom dialog shown.
      */
-    protected void showRationaleDialog(final boolean canRequestAgain, String message,
-                                       final @NonNull DialogResult dialogResult) {
-        showStandardPermissionDialog(message, dialogResult);
+    protected Dialog showRationaleDialog(final boolean canRequestAgain, String message,
+                                         final @NonNull DialogResult dialogResult) {
+        return showStandardPermissionDialog(message, dialogResult);
     }
 
-    private void showStandardPermissionDialog(String message,
-                                              @NonNull final DialogResult dialogResult) {
+    private Dialog showStandardPermissionDialog(String message,
+                                                @NonNull final DialogResult dialogResult) {
         AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setMessage(message)
                 .setCancelable(true)
@@ -281,6 +297,14 @@ public class PermissionRequestActivity extends Activity {
                 .show();
 
         alertDialog.setCanceledOnTouchOutside(true);
+        return alertDialog;
+    }
+
+    private void removeDialog() {
+        if (mRationalDialog != null && mRationalDialog.isShowing()) {
+            mRationalDialog.dismiss();
+            mRationalDialog = null;
+        }
     }
 
     private void gotoSettings() {
