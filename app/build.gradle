@@ -18,7 +18,9 @@ dependencies {
 
     implementation deps.support.appcompat
     implementation deps.support.constraintLayout
+    implementation deps.support.design
     implementation deps.timber
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    implementation 'com.android.support:design:26.1.0'
+
+    debugImplementation deps.leakcanaryDebug
+    releaseImplementation deps.leakcanaryRelease
 }
