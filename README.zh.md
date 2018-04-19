@@ -26,7 +26,7 @@ Permission Reuquester 是一个可以让你用最少工作量，完成一整套�
 
 ``` gradle
 dependencies {
-    compile 'me.tankery.lib:permission-requester:1.0.0'
+    compile 'me.tankery.lib:permission-requester:1.1.0'
 }
 ```
 
@@ -34,7 +34,7 @@ dependencies {
 
 ``` gradle
 dependencies {
-    implementation 'me.tankery.lib:permission-requester:1.0.0'
+    implementation 'me.tankery.lib:permission-requester:1.1.0'
 }
 ```
 
