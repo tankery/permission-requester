@@ -1,5 +1,17 @@
 apply plugin: 'com.android.application'
 
+// Define some common closures (methods) for code share
+ext.getTagCount = {
+    String cmd = "git tag -l \"v_*\""
+    String result = cmd.execute((String[])null, project.projectDir).text
+    return result.trim().split("\n").length
+}
+ext.getLatestTaggedVersion = {
+    String cmd = "git describe --abbrev=0 --tags"
+    String result = cmd.execute((String[])null, project.projectDir).text
+    return result.trim().replace("v_", "")
+}
+
 android {
     compileSdkVersion versions.compileSdk
     buildToolsVersion versions.buildTools
@@ -8,8 +20,16 @@ android {
         applicationId "me.tankery.permission"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode getTagCount()
+        versionName getLatestTaggedVersion()
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.debug
+
+            setProperty("archivesBaseName", "permission-requester-demo-${defaultConfig.versionName}")
+        }
     }
 }
 
