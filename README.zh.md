@@ -1,5 +1,9 @@
 # Permission Requester
 
+[![Build Status](https://travis-ci.org/tankery/permission-requester.svg?branch=master)](https://travis-ci.org/tankery/permission-requester)
+[![GitHub release](https://img.shields.io/github/release/tankery/permission-requester.svg)](https://github.com/tankery/permission-requester)
+[![Bintray](https://img.shields.io/bintray/v/tankery/maven/PermissionRequester.svg?maxAge=2592000)](https://bintray.com/tankery/maven/PermissionRequester)
+
 [EN](README.md)
 
 Permission Reuquester 是一个可以让你用最少工作量，完成一整套权限请求的 Activity。
