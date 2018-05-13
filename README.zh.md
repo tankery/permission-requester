@@ -1,7 +1,7 @@
 # Permission Requester
 
 [![Build Status](https://travis-ci.org/tankery/permission-requester.svg?branch=master)](https://travis-ci.org/tankery/permission-requester)
-[![GitHub release](https://img.shields.io/github/release/tankery/permission-requester.svg)](https://github.com/tankery/permission-requester)
+[![GitHub release](https://img.shields.io/github/release/tankery/permission-requester.svg)](https://github.com/tankery/permission-requester/releases)
 [![Bintray](https://img.shields.io/bintray/v/tankery/maven/PermissionRequester.svg?maxAge=2592000)](https://bintray.com/tankery/maven/PermissionRequester)
 
 [EN](README.md)
